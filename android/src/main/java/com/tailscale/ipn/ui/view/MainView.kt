@@ -991,7 +991,7 @@ fun SimplifiedConnectionView(
       }
       
       // 在圆形按钮下方增加一些间距
-      Spacer(modifier = Modifier.height(32.dp))
+      // Spacer(modifier = Modifier.height(32.dp))
       
       // 小的设置按钮（仅在已连接时显示）
       /*if (state == Ipn.State.Running && isOn) {
@@ -1065,7 +1065,7 @@ fun CircularConnectionButton(
   
   // 根据连接状态选择颜色
   val containerColor = when {
-    isConnected -> Color(0xFF4CAF50) // 鲜明的绿色表示已连接
+    isConnected -> Color(0xFFE10F71) // 表示已连接
     isLoading -> MaterialTheme.colorScheme.primary // 连接中使用主色调
     else -> Color(0xFF9E9E9E) // 未连接时使用中性灰色
   }
@@ -1147,7 +1147,7 @@ fun CircularConnectionButton(
     }
     
     // 添加按钮下方的阴影效果
-    Spacer(modifier = Modifier.height(8.dp))
+    /*Spacer(modifier = Modifier.height(8.dp))
     Box(
         modifier = Modifier
             .size(buttonSize * 0.8f, 8.dp)
@@ -1155,7 +1155,7 @@ fun CircularConnectionButton(
             .background(
                 Color.Black.copy(alpha = 0.1f)
             )
-    )
+    )*/
   }
 }
 
@@ -1172,7 +1172,7 @@ fun StatusFooter(
       // 已连接时显示服务器信息
       val serverInfo = selfNode?.Addresses?.firstOrNull()?.split("/")?.firstOrNull()
       if (serverInfo != null) {
-        "已建立安全连接：$serverInfo"
+        "已建立安全连接 网络：$serverInfo"
       } else {
         user?.NetworkProfile?.DomainName?.let { "已连接到：$it" } ?: "已安全连接"
       }
