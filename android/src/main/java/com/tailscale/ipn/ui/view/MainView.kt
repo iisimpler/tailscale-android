@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
@@ -33,6 +34,7 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,6 +61,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -70,6 +74,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
@@ -127,7 +132,7 @@ fun MainView(
     viewModel: MainViewModel
 ) {
   val currentPingDevice by viewModel.pingViewModel.peer.collectAsState()
-  val healthIcon by viewModel.healthIcon.collectAsState()
+  // val healthIcon by viewModel.healthIcon.collectAsState() // 不再需要
 
   LoadingIndicator.Wrap {
     Scaffold(contentWindowInsets = WindowInsets.Companion.statusBars) { paddingInsets ->
@@ -151,6 +156,7 @@ fun MainView(
             // Hide the header only on Android TV when the user needs to login
             val hideHeader = (isAndroidTV() && state == Ipn.State.NeedsLogin)
 
+            /* 注释掉原有的复杂 UI 元素
             ListItem(
                 colors = MaterialTheme.colorScheme.surfaceContainerListItem,
                 leadingContent = {
@@ -206,7 +212,9 @@ fun MainView(
                     }
                   }*/
                 })
+            */
 
+            /* 注释掉原有的复杂状态处理
             when (state) {
               Ipn.State.Running -> {
 
@@ -251,6 +259,37 @@ fun MainView(
                     {
                       viewModel.showVPNPermissionLauncherIfUnauthorized()
                     })
+              }
+            }
+            */
+
+
+            // 新的极简 UI - 只显示一个大的连接按钮
+            SimplifiedConnectionView(
+                state = state,
+                isOn = isOn,
+                isPrepared = isPrepared,
+                user = user,
+                isToggleInProgress = viewModel.isToggleInProgress.value,
+                disableToggle = disableToggle.value,
+                onToggleVpn = { desiredState -> viewModel.toggleVpn(desiredState) },
+                onLogin = { viewModel.login() },
+                loginAtUrl = loginAtUrl,
+                selfNode = netmap?.SelfNode,
+                onShowVpnPermission = { viewModel.showVPNPermissionLauncherIfUnauthorized() },
+                onNavigateToHealth = { navigation.onNavigateToHealth() },
+                onNavigateToSettings = { navigation.onNavigateToSettings() }
+            )
+
+          // 保留必要的权限处理和 VPN 权限启动
+            when (state) {
+              Ipn.State.Running -> {
+                PromptPermissionsIfNecessary()
+                viewModel.maybeRequestVpnPermission()
+                LaunchVpnPermissionIfNeeded(viewModel)
+              }
+              else -> {
+                // 其他状态的处理已集成到 SimplifiedConnectionView 中
               }
             }
           }
@@ -505,7 +544,7 @@ fun ConnectView(
               fontWeight = FontWeight.SemiBold,
               textAlign = TextAlign.Center,
               fontFamily = MaterialTheme.typography.titleMedium.fontFamily)
-          val tailnetName = user.NetworkProfile?.DomainName ?: ""
+          // val tailnetName = user.NetworkProfile?.DomainName ?: ""
           /*Text(
               buildAnnotatedString {
                 append(stringResource(id = R.string.connect_to_tailnet_prefix))
@@ -839,4 +878,345 @@ fun MainViewPreview() {
           onNavigateToHealth = {},
           onNavigateToSearch = {}),
       vm)
+}
+
+// 新增的极简连接视图组件
+@Composable
+fun SimplifiedConnectionView(
+    state: Ipn.State,
+    isOn: Boolean,
+    isPrepared: Boolean,
+    user: IpnLocal.LoginProfile?,
+    isToggleInProgress: Boolean,
+    disableToggle: Boolean,
+    onToggleVpn: (Boolean) -> Unit,
+    onLogin: () -> Unit,
+    loginAtUrl: (String) -> Unit,
+    selfNode: Tailcfg.Node?,
+    onShowVpnPermission: () -> Unit,
+    onNavigateToHealth: () -> Unit,
+    onNavigateToSettings: () -> Unit
+) {
+  // 处理权限请求
+  LaunchedEffect(isPrepared) {
+    if (!isPrepared && state != Ipn.State.NeedsLogin) {
+      onShowVpnPermission()
+    }
+  }
+
+  // 整个屏幕布局，采用垂直居中的 Column
+  Column(
+      modifier = Modifier
+          .fillMaxSize()
+          .padding(32.dp),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.SpaceBetween // 顶部、中央、底部分布
+  ) {
+    // Spacer(modifier = Modifier.height(8.dp))
+    // 顶部品牌标题
+    BrandHeader()
+    
+    // 中央圆形开关 (主要控制区域)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+      when {
+        // 需要登录
+        state == Ipn.State.NeedsLogin -> {
+          CircularConnectionButton(
+              icon = Icons.Outlined.Lock,
+              statusText = "需要登录",
+              isConnected = false,
+              isLoading = false,
+              enabled = true,
+              onClick = onLogin
+          )
+        }
+        // 需要机器认证
+        state == Ipn.State.NeedsMachineAuth -> {
+          CircularConnectionButton(
+              icon = Icons.Outlined.Lock,
+              statusText = "需要认证",
+              isConnected = false,
+              isLoading = false,
+              enabled = true,
+              onClick = { selfNode?.let { loginAtUrl(it.nodeAdminUrl) } }
+          )
+        }
+        // 未准备好（需要VPN权限）
+        !isPrepared -> {
+          CircularConnectionButton(
+              icon = painterResource(id = R.drawable.power),
+              statusText = "点击连接",
+              isConnected = false,
+              isLoading = false,
+              enabled = true,
+              onClick = { onToggleVpn(true) }
+          )
+        }
+        // 启动中
+        state == Ipn.State.Starting || state == Ipn.State.NoState -> {
+          CircularConnectionButton(
+              icon = painterResource(id = R.drawable.power),
+              statusText = "连接中...",
+              isConnected = false,
+              isLoading = true,
+              enabled = false,
+              onClick = { }
+          )
+        }
+        // 已连接
+        state == Ipn.State.Running && isOn -> {
+          CircularConnectionButton(
+              icon = Icons.Outlined.Lock, // 使用安全锁图标表示已连接且安全
+              statusText = "已连接",
+              isConnected = true,
+              isLoading = isToggleInProgress,
+              enabled = !disableToggle && !isToggleInProgress,
+              onClick = { onToggleVpn(false) }
+          )
+        }
+        // 未连接但已准备好
+        else -> {
+          CircularConnectionButton(
+              icon = painterResource(id = R.drawable.power),
+              statusText = "点击连接",
+              isConnected = false,
+              isLoading = isToggleInProgress,
+              enabled = !disableToggle && !isToggleInProgress,
+              onClick = { onToggleVpn(true) }
+          )
+        }
+      }
+      
+      // 在圆形按钮下方增加一些间距
+      Spacer(modifier = Modifier.height(32.dp))
+      
+      // 小的设置按钮（仅在已连接时显示）
+      /*if (state == Ipn.State.Running && isOn) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+          IconButton(
+              onClick = onNavigateToHealth,
+              modifier = Modifier.size(32.dp)
+          ) {
+            Icon(
+                painter = painterResource(id = R.drawable.timer),
+                contentDescription = "健康状态",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp)
+            )
+          }
+          
+          IconButton(
+              onClick = onNavigateToSettings,
+              modifier = Modifier.size(32.dp)
+          ) {
+            Icon(
+                Icons.Outlined.Settings,
+                contentDescription = "设置",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp)
+            )
+          }
+        }
+      }*/
+    }
+    
+    // 底部状态文本
+    StatusFooter(
+        state = state,
+        isOn = isOn,
+        user = user,
+        selfNode = selfNode
+    )
+  }
+}
+
+// 品牌标题组件
+@Composable
+fun BrandHeader() {
+  Text(
+      text = "美信VPN",
+      style = MaterialTheme.typography.headlineLarge.copy(
+          fontWeight = FontWeight.Bold,
+          fontSize = 32.sp
+      ),
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+      textAlign = TextAlign.Center
+  )
+}
+
+// 圆形连接按钮组件
+@Composable
+fun CircularConnectionButton(
+    icon: Any, // 可以是 ImageVector 或 Painter
+    statusText: String,
+    isConnected: Boolean,
+    isLoading: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit
+) {
+  val buttonSize = 240.dp
+  val iconSize = 64.dp
+  
+  // 根据连接状态选择颜色
+  val containerColor = when {
+    isConnected -> Color(0xFF4CAF50) // 鲜明的绿色表示已连接
+    isLoading -> MaterialTheme.colorScheme.primary // 连接中使用主色调
+    else -> Color(0xFF9E9E9E) // 未连接时使用中性灰色
+  }
+  
+  val contentColor = when {
+    isConnected || isLoading -> Color.White
+    else -> Color(0xFF424242) // 深灰色
+  }
+  
+  Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center
+  ) {
+    // 主要的圆形按钮
+    Box(
+        modifier = Modifier
+            .size(buttonSize)
+            .clip(CircleShape)
+            .background(containerColor)
+            .clickable(enabled = enabled) { onClick() }
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+      Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.Center
+      ) {
+        // 加载动画或图标
+        if (isLoading) {
+          CircularProgressIndicator(
+              modifier = Modifier.size(iconSize),
+              color = contentColor,
+              strokeWidth = 6.dp
+          )
+        } else {
+          // 显示图标
+          when (icon) {
+            is ImageVector -> {
+              Icon(
+                  imageVector = icon,
+                  contentDescription = null,
+                  modifier = Modifier.size(iconSize),
+                  tint = contentColor
+              )
+            }
+            is Painter -> {
+              Icon(
+                  painter = icon,
+                  contentDescription = null,
+                  modifier = Modifier.size(iconSize),
+                  tint = contentColor
+              )
+            }
+            else -> {
+              // 如果传入的不是预期的类型，使用默认的电源图标
+              Icon(
+                  painter = painterResource(id = R.drawable.power),
+                  contentDescription = null,
+                  modifier = Modifier.size(iconSize),
+                  tint = contentColor
+              )
+            }
+          }
+        }
+        
+        Spacer(modifier = Modifier.height(12.dp))
+        
+        // 状态文字
+        Text(
+            text = statusText,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 18.sp
+            ),
+            color = contentColor,
+            textAlign = TextAlign.Center
+        )
+      }
+    }
+    
+    // 添加按钮下方的阴影效果
+    Spacer(modifier = Modifier.height(8.dp))
+    Box(
+        modifier = Modifier
+            .size(buttonSize * 0.8f, 8.dp)
+            .clip(RoundedCornerShape(50))
+            .background(
+                Color.Black.copy(alpha = 0.1f)
+            )
+    )
+  }
+}
+
+// 底部状态文本组件
+@Composable
+fun StatusFooter(
+    state: Ipn.State,
+    isOn: Boolean,
+    user: IpnLocal.LoginProfile?,
+    selfNode: Tailcfg.Node?
+) {
+  val statusMessage = when {
+    state == Ipn.State.Running && isOn -> {
+      // 已连接时显示服务器信息
+      val serverInfo = selfNode?.Addresses?.firstOrNull()?.split("/")?.firstOrNull()
+      if (serverInfo != null) {
+        "已连接到：$serverInfo"
+      } else {
+        user?.NetworkProfile?.DomainName?.let { "已连接到：$it" } ?: "已安全连接"
+      }
+    }
+    state == Ipn.State.NeedsLogin -> {
+      "请先登录您的 VPN 账户"
+    }
+    state == Ipn.State.NeedsMachineAuth -> {
+      "设备需要管理员授权"
+    }
+    state == Ipn.State.Starting || state == Ipn.State.NoState -> {
+      "正在建立安全连接..."
+    }
+    else -> {
+      "请点击开关，保护您的网络安全"
+    }
+  }
+  
+  Column(
+      horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    Text(
+        text = statusMessage,
+        style = MaterialTheme.typography.bodyMedium.copy(
+            fontSize = 14.sp
+        ),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+    
+    // 如果已连接，显示网络名称
+    /*if (state == Ipn.State.Running && isOn) {
+      user?.NetworkProfile?.DomainName?.let { domain ->
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "网络：$domain",
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 12.sp
+            ),
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+            textAlign = TextAlign.Center
+        )
+      }
+    }*/
+  }
 }

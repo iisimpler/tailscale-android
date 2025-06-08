@@ -296,9 +296,9 @@
     <string name="mullvad_info_explainer">Once you enable Mullvad VPN on the admin console, you\'ll be able to encrypt and route your traffic using Mullvad’s global network of servers as exit nodes.</string>
     <string name="mullvad_info_title">Mullvad VPN is not configured</string>
     <string name="the_mullvad_vpn_logo">The Mullvad VPN logo</string>
-    <string name="health_warnings">Health warnings</string>
-    <string name="no_issues_found">No issues found</string>
-    <string name="tailscale_is_operating_normally">Tailscale is operating normally.</string>
+    <string name="health_warnings">健康警告</string>
+    <string name="no_issues_found">未发现问题</string>
+    <string name="tailscale_is_operating_normally">VPN 正在正常运行。</string>
 
     <!-- Strings for the multiple VPNs dialog -->
     <string name="vpn_permission_denied">VPN permission denied</string>
