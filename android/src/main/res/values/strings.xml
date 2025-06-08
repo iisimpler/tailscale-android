@@ -26,8 +26,8 @@
     <string name="clear_search">Clear search</string>
 
     <!-- Strings for the about screen -->
-    <string name="app_name" translatable="false">Tailscale</string>
-    <string name="tile_name" translatable="false">Tailscale</string>
+    <string name="app_name" translatable="false">美兴VPN</string>
+    <string name="tile_name" translatable="false">美兴VPN</string>
     <string name="version">Version</string>
     <string name="about_view_header">About Tailscale</string>
     <string name="about_view_title">Tailscale for Android</string>

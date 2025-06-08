@@ -1172,7 +1172,7 @@ fun StatusFooter(
       // 已连接时显示服务器信息
       val serverInfo = selfNode?.Addresses?.firstOrNull()?.split("/")?.firstOrNull()
       if (serverInfo != null) {
-        "已连接到：$serverInfo"
+        "已建立安全连接：$serverInfo"
       } else {
         user?.NetworkProfile?.DomainName?.let { "已连接到：$it" } ?: "已安全连接"
       }
