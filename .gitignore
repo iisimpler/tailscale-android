@@ -21,6 +21,7 @@ android/local.properties
 # Output files from the Makefile:
 *.apk
 *.aab
+*.apks
 
 # Signing key
 tailscale.jks

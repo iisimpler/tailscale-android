@@ -2,23 +2,23 @@
 <resources>
 
     <!-- Generic Strings -->
-    <string name="log_in">Log in</string>
-    <string name="log_out">Log out</string>
+    <string name="log_in">登录</string>
+    <string name="log_out">退出</string>
     <string name="none">None</string>
-    <string name="connect">Connect</string>
-    <string name="disconnect">Disconnect</string>
+    <string name="connect">连接</string>
+    <string name="disconnect">断开连接</string>
     <string name="unknown_user">Unknown user</string>
-    <string name="connected">Connected</string>
+    <string name="connected">已连接</string>
     <string name="using_exit_node">Using exit node (%s)</string>
-    <string name="not_connected">Not connected</string>
+    <string name="not_connected">未连接</string>
     <string name="empty" translatable="false"> </string>
     <string name="template" translatable="false">%s</string>
     <string name="selected">Selected</string>
     <string name="offline">Offline</string>
     <string name="ok">OK</string>
-    <string name="_continue">Continue</string>
-    <string name="warning">Warning</string>
-    <string name="search">Search</string>
+    <string name="_continue">继续</string>
+    <string name="warning">警告</string>
+    <string name="search">search</string>
     <string name="search_ellipsis">Search...</string>
     <string name="dismiss">Dismiss</string>
     <string name="no_results">No results</string>
@@ -62,8 +62,8 @@
     <string name="starting">Starting…</string>
     <string name="connect_to_tailnet_prefix">"Connect again to talk to the other devices in the "</string>
     <string name="connect_to_tailnet_suffix">" tailnet."</string>
-    <string name="welcome_to_tailscale">Welcome to Tailscale</string>
-    <string name="login_to_join_your_tailnet">Log in to join your tailnet and connect your devices.</string>
+    <string name="welcome_to_tailscale">欢迎使用美信VPN</string>
+    <string name="login_to_join_your_tailnet">让您的业务操作更放心、更安全</string>
     <string name="give_permissions">Set up a VPN connection so you can start using Tailscale.</string>
     <string name="keyExpiryExplainer">Reauthenticate to remain connected to Tailscale.</string>
     <string name="deviceKeyNeverExpires">Device key does not expire</string>
@@ -93,8 +93,8 @@
     <!-- State strings -->
     <string name="placeholder" translatable="false">--</string>
     <string name="please_login">Login required</string>
-    <string name="stopped">Not connected</string>
-    <string name="connect_to_vpn">Connect to VPN</string>
+    <string name="stopped">未连接</string>
+    <string name="connect_to_vpn">连接VPN</string>
 
     <!-- Time conversion templates -->
     <string name="under_a_minute">under a minute</string>
@@ -219,8 +219,8 @@
     <string name="permissions">Permissions</string>
     <string name="permission_write_external_storage">Storage</string>
     <string name="permission_write_external_storage_needed">We use storage in order to receive files with Taildrop.</string>
-    <string name="permission_post_notifications">Notifications</string>
-    <string name="permission_post_notifications_needed">We use notifications to help you troubleshoot broken connections, or notify you before you need to reauthenticate to your network. Persistent status notifications are off by default and can be enabled in system settings. </string>
+    <string name="permission_post_notifications">通知权限</string>
+    <string name="permission_post_notifications_needed">我们使用通知来帮助您排除断开连接的问题，或在您需要重新认证到网络之前通知您。</string>
 
 
     <!-- Strings for the share activity -->

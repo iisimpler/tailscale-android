@@ -193,7 +193,7 @@ fun MainView(
                   }
                 },
                 trailingContent = {
-                  Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterEnd) {
+                  /*Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterEnd) {
                     when (user) {
                       null -> SettingsButton { navigation.onNavigateToSettings() }
                       else -> {
@@ -204,7 +204,7 @@ fun MainView(
                             isFocusable = true)
                       }
                     }
-                  }
+                  }*/
                 })
 
             when (state) {
@@ -213,7 +213,7 @@ fun MainView(
                 PromptPermissionsIfNecessary()
                 viewModel.maybeRequestVpnPermission()
                 LaunchVpnPermissionIfNeeded(viewModel)
-                LaunchedEffect(state) {
+                /*LaunchedEffect(state) {
                   if (state == Ipn.State.Running && !AndroidTVUtil.isAndroidTV()) {
                     viewModel.showDirectoryPickerLauncher()
                   }
@@ -232,8 +232,8 @@ fun MainView(
                     viewModel = viewModel,
                     onNavigateToPeerDetails = navigation.onNavigateToPeerDetails,
                     onSearchBarClick = navigation.onNavigateToSearch,
-                    onSearch = { viewModel.searchPeers(it) })
-              }
+                    onSearch = { viewModel.searchPeers(it) })*/
+                }
               Ipn.State.NoState,
               Ipn.State.Starting -> StartingView()
               else -> {
@@ -462,10 +462,10 @@ fun ConnectView(
               text = stringResource(id = R.string.welcome_to_tailscale),
               style = MaterialTheme.typography.titleMedium,
               textAlign = TextAlign.Center)
-          Text(
+          /*Text(
               stringResource(R.string.give_permissions),
               style = MaterialTheme.typography.titleSmall,
-              textAlign = TextAlign.Center)
+              textAlign = TextAlign.Center)*/
           Spacer(modifier = Modifier.size(1.dp))
           PrimaryActionButton(onClick = connectAction) {
             Text(
@@ -506,7 +506,7 @@ fun ConnectView(
               textAlign = TextAlign.Center,
               fontFamily = MaterialTheme.typography.titleMedium.fontFamily)
           val tailnetName = user.NetworkProfile?.DomainName ?: ""
-          Text(
+          /*Text(
               buildAnnotatedString {
                 append(stringResource(id = R.string.connect_to_tailnet_prefix))
                 pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
@@ -517,7 +517,7 @@ fun ConnectView(
               fontSize = MaterialTheme.typography.titleMedium.fontSize,
               fontWeight = FontWeight.Normal,
               textAlign = TextAlign.Center,
-          )
+          )*/
           Spacer(modifier = Modifier.size(1.dp))
           PrimaryActionButton(onClick = connectAction) {
             Text(
@@ -531,10 +531,10 @@ fun ConnectView(
               text = stringResource(id = R.string.welcome_to_tailscale),
               style = MaterialTheme.typography.titleMedium,
               textAlign = TextAlign.Center)
-          Text(
+          /*Text(
               stringResource(R.string.login_to_join_your_tailnet),
               style = MaterialTheme.typography.titleSmall,
-              textAlign = TextAlign.Center)
+              textAlign = TextAlign.Center)*/
           Spacer(modifier = Modifier.size(1.dp))
           PrimaryActionButton(onClick = loginAction) {
             Text(

@@ -237,7 +237,7 @@ class MainViewModel(private val vpnViewModel: VpnViewModel) : IpnViewModel() {
     }
 
     viewModelScope.launch {
-      showDirectoryPickerLauncher()
+//      showDirectoryPickerLauncher()
       isToggleInProgress.value = true
       try {
         val currentState = Notifier.state.value

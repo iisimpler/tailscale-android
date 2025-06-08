@@ -266,6 +266,13 @@ func (a *App) runBackendOnce(ctx context.Context) error {
 func (a *App) newBackend(dataDir string, appCtx AppContext, store *stateStore,
 	settings settingsFunc) (*backend, error) {
 
+	// Force HTTP usage for control server communications
+	// This is needed for private deployments that only support HTTP
+	os.Setenv("TS_DEBUG_CONTROL_HTTP", "1")
+	os.Setenv("INSECURE_DEV_MODE", "1")
+	os.Setenv("TS_DEBUG_USE_HTTP", "1")
+	os.Setenv("TS_UNSAFE_DISABLE_TLS", "1")
+	
 	sys := new(tsd.System)
 	sys.Set(store)
 
@@ -354,7 +361,14 @@ func (a *App) newBackend(dataDir string, appCtx AppContext, store *stateStore,
 	b.backend = lb
 	b.sys = sys
 	go func() {
-		err := lb.Start(ipn.Options{})
+		// Set the default control URL through ipn.Options
+		defaultPrefs := ipn.NewPrefs()
+		defaultPrefs.ControlURL = "http://161.189.184.29:8888"
+		opts := ipn.Options{
+			UpdatePrefs: defaultPrefs,
+		}
+		
+		err := lb.Start(opts)
 		if err != nil {
 			log.Printf("Failed to start LocalBackend, panicking: %s", err)
 			panic(err)
