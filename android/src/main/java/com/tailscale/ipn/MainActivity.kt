@@ -269,7 +269,8 @@ class MainActivity : ComponentActivity() {
                   }
                 }
 
-            // Show the intro screen one time
+            // NOT Show the intro screen one time
+            setIntroScreenViewed(true)
             if (!introScreenViewed()) {
               navController.navigate("intro")
               setIntroScreenViewed(true)

@@ -323,7 +323,14 @@ func (a *App) newBackend(dataDir, directFileRoot string, appCtx AppContext, stor
 	b.backend = lb
 	b.sys = sys
 	go func() {
-		err := lb.Start(ipn.Options{})
+		// Set the default control URL
+		defaultPrefs := ipn.NewPrefs()
+		defaultPrefs.ControlURL = "https://vpnqa.microcredchina.com:8888"
+		defaultPrefs.WantRunning = true
+		opts := ipn.Options{
+			UpdatePrefs: defaultPrefs,
+		}
+		err := lb.Start(opts)
 		if err != nil {
 			log.Printf("Failed to start LocalBackend, panicking: %s", err)
 			panic(err)
