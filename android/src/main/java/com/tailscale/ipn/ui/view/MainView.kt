@@ -1040,7 +1040,7 @@ fun SimplifiedConnectionView(
 @Composable
 fun BrandHeader() {
   Text(
-      text = "美信VPN",
+      text = "美兴VPN",
       style = MaterialTheme.typography.headlineLarge.copy(
           fontWeight = FontWeight.Bold,
           fontSize = 32.sp

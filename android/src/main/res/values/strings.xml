@@ -62,7 +62,7 @@
     <string name="starting">Starting…</string>
     <string name="connect_to_tailnet_prefix">"Connect again to talk to the other devices in the "</string>
     <string name="connect_to_tailnet_suffix">" tailnet."</string>
-    <string name="welcome_to_tailscale">欢迎使用美信VPN</string>
+    <string name="welcome_to_tailscale">欢迎使用美兴VPN</string>
     <string name="login_to_join_your_tailnet">让您的业务操作更放心、更安全</string>
     <string name="give_permissions">Set up a VPN connection so you can start using Tailscale.</string>
     <string name="keyExpiryExplainer">Reauthenticate to remain connected to Tailscale.</string>
