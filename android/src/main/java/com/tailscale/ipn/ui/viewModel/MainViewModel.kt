@@ -19,6 +19,7 @@ import androidx.lifecycle.viewModelScope
 import com.tailscale.ipn.App
 import com.tailscale.ipn.R
 import com.tailscale.ipn.mdm.MDMSettings
+import com.tailscale.ipn.ui.localapi.Client
 import com.tailscale.ipn.ui.model.Ipn
 import com.tailscale.ipn.ui.model.Ipn.State
 import com.tailscale.ipn.ui.model.Tailcfg
@@ -192,6 +193,25 @@ class MainViewModel(private val vpnViewModel: VpnViewModel) : IpnViewModel() {
 
     viewModelScope.launch {
       App.get().healthNotifier?.currentIcon?.collect { icon -> healthIcon.set(icon) }
+    }
+
+    // 确保子网路由功能正常工作：当VPN连接成功时自动设置RouteAll=true
+    viewModelScope.launch {
+      combine(Notifier.state, Notifier.prefs) { state, prefs -> state to prefs }
+          .collect { (state, prefs) ->
+            if (state == State.Running && prefs != null && !prefs.RouteAll) {
+              TSLog.d("MainViewModel", "VPN connected but RouteAll is false, enabling it for subnet routes")
+              val prefsOut = Ipn.MaskedPrefs()
+              prefsOut.RouteAll = true
+              Client(viewModelScope).editPrefs(prefsOut) { result ->
+                if (result.isSuccess) {
+                  TSLog.d("MainViewModel", "Successfully enabled RouteAll for subnet routing")
+                } else {
+                  TSLog.e("MainViewModel", "Failed to enable RouteAll: ${result.exceptionOrNull()}")
+                }
+              }
+            }
+          }
     }
   }
 
