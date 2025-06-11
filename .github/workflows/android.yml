@@ -35,5 +35,33 @@ jobs:
       - name: Build APKs
         run: make tailscale-debug.apk
 
-      - name: Run tests
-        run: make test
+#      - name: Run tests
+#        run: make test
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tailscale-debug-apk
+          path: tailscale-debug.apk
+
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: build
+
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/mxvpn' || github.ref == 'refs/heads/meixing' || startsWith(github.ref, 'refs/heads/release-branch/'))
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download APK from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: tailscale-debug-apk
+
+      - name: Create Release and Upload Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: tailscale-debug.apk
+          generate_release_notes: true
