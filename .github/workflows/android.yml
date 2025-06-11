@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - meixing
       - mxvpn
       - "release-branch/*"
   pull_request:
