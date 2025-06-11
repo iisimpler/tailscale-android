@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - mxvpn
       - "release-branch/*"
   pull_request:
     # all PRs on all branches
