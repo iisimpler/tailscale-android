@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
 
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/mxvpn' || github.ref == 'refs/heads/meixing' || startsWith(github.ref, 'refs/heads/release-branch/'))
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/mxvpn' || github.ref == 'refs/heads/meixing' || github.ref == 'refs/heads/mx' || startsWith(github.ref, 'refs/heads/release-branch/'))
 
     permissions:
       contents: write
