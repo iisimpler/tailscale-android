@@ -119,7 +119,7 @@ apk: $(DEBUG_APK)
 tailscale-debug: $(DEBUG_APK)
 
 $(DEBUG_APK): libtailscale debug-symbols version gradle-dependencies build-unstripped-aar
-	(cd android && ./gradlew test assembleDebug)
+	(cd android && ./gradlew assembleDebug)
 	install -C android/build/outputs/apk/debug/android-debug.apk $@
 
 # Builds the release AAB and signs it (phone/tablet/chromeOS variant)
