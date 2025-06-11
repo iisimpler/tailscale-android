@@ -60,8 +60,14 @@ jobs:
         with:
           name: tailscale-debug-apk
 
+      - name: Generate tag for release
+        id: tag_generator
+        run: echo "tag_name=nightly-$(date +'%Y%m%d%H%M')-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
       - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v2
         with:
           files: tailscale-debug.apk
+          tag_name: ${{ steps.tag_generator.outputs.tag_name }}
+          prerelease: true
           generate_release_notes: true
