@@ -14,7 +14,7 @@ DOCKER_IMAGE := tailscale-android-build-amd64-031325-1
 export TS_USE_TOOLCHAIN=1
 
 # Auto-select an NDK from ANDROID_HOME (choose highest version available)
-NDK_ROOT ?= $(shell ls -1d $(ANDROID_HOME)/ndk/* 2>/dev/null | grep 23.1.7779620)
+NDK_ROOT ?= $(shell ls -1d $(ANDROID_HOME)/ndk/* 2>/dev/null | sort -V | tail -n 1)
 
 HOST_OS := $(shell uname | tr A-Z a-z)
 ifeq ($(HOST_OS),linux)
