@@ -1,6 +1,6 @@
 module github.com/tailscale/tailscale-android
 
-go 1.24.0
+go 1.24.4
 
 require (
 	github.com/tailscale/wireguard-go v0.0.0-20250304000100-91a0587fb251
