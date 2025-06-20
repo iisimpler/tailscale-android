@@ -241,13 +241,6 @@ func (a *App) runBackend(ctx context.Context) error {
 func (a *App) newBackend(dataDir, directFileRoot string, appCtx AppContext, store *stateStore,
 	settings settingsFunc) (*backend, error) {
 
-	// Force HTTP usage for control server communications
-	// This is needed for private deployments that only support HTTP
-	os.Setenv("TS_DEBUG_CONTROL_HTTP", "1")
-	os.Setenv("INSECURE_DEV_MODE", "1")
-	os.Setenv("TS_DEBUG_USE_HTTP", "1")
-	os.Setenv("TS_UNSAFE_DISABLE_TLS", "1")
-
 	sys := new(tsd.System)
 	sys.Set(store)
 
@@ -333,7 +326,7 @@ func (a *App) newBackend(dataDir, directFileRoot string, appCtx AppContext, stor
 	go func() {
 		// Set the default control URL
 		defaultPrefs := ipn.NewPrefs()
-		defaultPrefs.ControlURL = "http://161.189.184.29:8888"
+		defaultPrefs.ControlURL = "https://vpnqa.microcredchina.com:8888"
 		defaultPrefs.WantRunning = true
 		opts := ipn.Options{
 			UpdatePrefs: defaultPrefs,
