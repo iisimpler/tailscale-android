@@ -15,7 +15,7 @@ export TS_USE_TOOLCHAIN=1
 
 # Auto-select an NDK from ANDROID_HOME (choose highest version available)
 # NDK_ROOT ?= $(shell ls -1d $(ANDROID_HOME)/ndk/* 2>/dev/null | sort -V | tail -n 1)
-NDK_ROOT ?= $(shell ls -1d $(ANDROID_HOME)/ndk/* 2>/dev/null | grep 28.1.13356709)
+NDK_ROOT ?= $(shell ls -1d $(ANDROID_HOME)/ndk/* 2>/dev/null | grep 25.2.9519653)
 
 HOST_OS := $(shell uname | tr A-Z a-z)
 ifeq ($(HOST_OS),linux)
@@ -47,7 +47,7 @@ else
     ANDROID_TOOLS_URL := "https://dl.google.com/android/repository/commandlinetools-mac-9477386_latest.zip"
     ANDROID_TOOLS_SUM := "2072ffce4f54cdc0e6d2074d2f381e7e579b7d63e915c220b96a7db95b2900ee  commandlinetools-mac-9477386_latest.zip"
 endif
-ANDROID_SDK_PACKAGES := 'platforms;android-34' 'extras;android;m2repository' 'ndk;28.1.13356709' 'platform-tools' 'build-tools;34.0.0'
+ANDROID_SDK_PACKAGES := 'platforms;android-34' 'extras;android;m2repository' 'ndk;25.2.9519653' 'platform-tools' 'build-tools;34.0.0'
 
 # Attempt to find an ANDROID_SDK_ROOT / ANDROID_HOME based either from
 # preexisting environment or common locations.
