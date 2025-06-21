@@ -74,6 +74,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.tailscale.ipn.App
 import com.tailscale.ipn.R
 import com.tailscale.ipn.mdm.MDMSettings
+import com.tailscale.ipn.mdm.SettingState
 import com.tailscale.ipn.mdm.ShowHide
 import com.tailscale.ipn.ui.model.Ipn
 import com.tailscale.ipn.ui.model.IpnLocal
@@ -294,6 +295,8 @@ fun MainView(
                     { viewModel.login() },
                     loginAtUrl,
                     netmap?.SelfNode,
+                    disableToggle,
+                    isToggleInProgress,
                     { viewModel.showVPNPermissionLauncherIfUnauthorized() })
               }
             }
@@ -470,6 +473,8 @@ fun ConnectView(
     loginAction: () -> Unit,
     loginAtUrlAction: (String) -> Unit,
     selfNode: Tailcfg.Node?,
+    disableToggle: SettingState<Boolean>,
+    isToggleInProgress: Boolean,
     showVPNPermissionLauncherIfUnauthorized: () -> Unit
 ) {
   LaunchedEffect(isPrepared) {
@@ -496,7 +501,9 @@ fun ConnectView(
               style = MaterialTheme.typography.titleSmall,
               textAlign = TextAlign.Center)
           Spacer(modifier = Modifier.size(100.dp))
-          PrimaryActionButton(onClick = connectAction) {
+          PrimaryActionButton(
+              onClick = connectAction,
+              enabled = !disableToggle.value && !isToggleInProgress) {
             Text(
                 text = stringResource(id = R.string.connect),
                 fontSize = MaterialTheme.typography.titleMedium.fontSize)
