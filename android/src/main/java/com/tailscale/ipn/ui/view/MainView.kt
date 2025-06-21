@@ -142,6 +142,7 @@ fun MainView(
             val netmap by viewModel.netmap.collectAsState(initial = null)
             val showExitNodePicker by MDMSettings.exitNodesPicker.flow.collectAsState()
             val disableToggle by MDMSettings.forceEnabled.flow.collectAsState()
+            val isToggleInProgress by viewModel.isToggleInProgress.collectAsState(initial = true)
             val showKeyExpiry by viewModel.showExpiry.collectAsState(initial = false)
 
             // Hide the header only on Android TV when the user needs to login
@@ -149,26 +150,26 @@ fun MainView(
 
             ListItem(
                 colors = MaterialTheme.colorScheme.surfaceContainerListItem,
-                leadingContent = {
+                /*leadingContent = {
                   if (!hideHeader) {
                     TintedSwitch(
                         checked = isOn,
                         enabled =
-                            !disableToggle.value &&
-                                !viewModel.isToggleInProgress
-                                    .value, // Disable switch if toggle is in progress
+                            !disableToggle.value && !isToggleInProgress, // Disable switch if toggle is in progress
                         onCheckedChange = { desiredState -> viewModel.toggleVpn(desiredState) })
                   }
-                },
+                },*/
                 headlineContent = {
-                  user?.NetworkProfile?.DomainName?.let { domain ->
-                    AutoResizingText(
-                        text = domain,
-                        style = MaterialTheme.typography.titleMedium.short,
-                        minFontSize = MaterialTheme.typography.minTextSize,
-                        overflow = TextOverflow.Ellipsis)
-                  }
-                },
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        AutoResizingText(
+                            text = "美兴VPN",
+                            style = MaterialTheme.typography.titleMedium.short,
+                            minFontSize = MaterialTheme.typography.minTextSize,
+                            overflow = TextOverflow.Ellipsis)
+                    }
+                }
+                // Hide the supporting content
+                /*,
                 supportingContent = {
                   if (!hideHeader) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -187,7 +188,9 @@ fun MainView(
                       }
                     }
                   }
-                },
+                }*/
+                // Hide Avatar
+                /*,
                 trailingContent = {
                   Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterEnd) {
                     when (user) {
@@ -201,7 +204,7 @@ fun MainView(
                       }
                     }
                   }
-                })
+                }*/)
 
             when (state) {
               Ipn.State.Running -> {
@@ -214,16 +217,68 @@ fun MainView(
                   ExpiryNotification(netmap = netmap, action = { viewModel.login() })
                 }
 
+                  /* Hide ExitNodeStatus
                 if (showExitNodePicker.value == ShowHide.Show) {
                   ExitNodeStatus(
                       navAction = navigation.onNavigateToExitNodes, viewModel = viewModel)
                 }
+                  */
 
+                  /* Hide PeerList
                 PeerList(
                     viewModel = viewModel,
                     onNavigateToPeerDetails = navigation.onNavigateToPeerDetails,
                     onSearchBarClick = navigation.onNavigateToSearch,
                     onSearch = { viewModel.searchPeers(it) })
+              }
+                      */
+
+                  Row(
+                      horizontalArrangement = Arrangement.Center,
+                      modifier = Modifier.fillMaxWidth()
+                  ) {
+                      Column(
+                          horizontalAlignment = Alignment.CenterHorizontally,
+                          modifier = Modifier.fillMaxWidth()
+                      ) {
+                          Column(
+                              modifier = Modifier
+                                  .padding(8.dp)
+                                  .fillMaxWidth(0.7f)
+                                  .fillMaxHeight(),
+                              verticalArrangement = Arrangement.spacedBy(
+                                  8.dp,
+                                  alignment = Alignment.CenterVertically
+                              ),
+                              horizontalAlignment = Alignment.CenterHorizontally,
+                          ) {
+                              Icon(
+                                  painter = painterResource(id = R.drawable.check_circle),
+                                  contentDescription = null,
+                                  modifier = Modifier.size(80.dp),
+                                  tint = MaterialTheme.colorScheme.primary
+                              )
+                              Text(
+                                  text = stringResource(id = R.string.connected),
+                                  fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                  fontWeight = FontWeight.SemiBold,
+                                  textAlign = TextAlign.Center,
+                                  fontFamily = MaterialTheme.typography.titleMedium.fontFamily
+                              )
+                              Spacer(modifier = Modifier.size(100.dp))
+                              PrimaryActionButton(
+                                  onClick = { viewModel.toggleVpn(false) },
+                                  enabled = !disableToggle.value && !isToggleInProgress
+                              ) {
+                                  Text(
+                                      text = stringResource(id = R.string.disconnect),
+                                      style = MaterialTheme.typography.titleMedium
+                                  )
+                              }
+
+                          }
+                      }
+                  }
               }
               Ipn.State.NoState,
               Ipn.State.Starting -> StartingView()
@@ -430,7 +485,7 @@ fun ConnectView(
           horizontalAlignment = Alignment.CenterHorizontally,
       ) {
         if (!isPrepared) {
-          TailscaleLogoView(modifier = Modifier.size(50.dp))
+          // TailscaleLogoView(modifier = Modifier.size(50.dp))
           Spacer(modifier = Modifier.size(1.dp))
           Text(
               text = stringResource(id = R.string.welcome_to_tailscale),
@@ -440,7 +495,7 @@ fun ConnectView(
               stringResource(R.string.give_permissions),
               style = MaterialTheme.typography.titleSmall,
               textAlign = TextAlign.Center)
-          Spacer(modifier = Modifier.size(1.dp))
+          Spacer(modifier = Modifier.size(100.dp))
           PrimaryActionButton(onClick = connectAction) {
             Text(
                 text = stringResource(id = R.string.connect),
@@ -469,9 +524,9 @@ fun ConnectView(
           }
         } else if (state != Ipn.State.NeedsLogin && user != null && !user.isEmpty()) {
           Icon(
-              painter = painterResource(id = R.drawable.power),
+              painter = painterResource(id = R.drawable.xmark_circle),
               contentDescription = null,
-              modifier = Modifier.size(40.dp),
+              modifier = Modifier.size(80.dp),
               tint = MaterialTheme.colorScheme.disabled)
           Text(
               text = stringResource(id = R.string.not_connected),
@@ -479,6 +534,7 @@ fun ConnectView(
               fontWeight = FontWeight.SemiBold,
               textAlign = TextAlign.Center,
               fontFamily = MaterialTheme.typography.titleMedium.fontFamily)
+            /*
           val tailnetName = user.NetworkProfile?.DomainName ?: ""
           Text(
               buildAnnotatedString {
@@ -492,14 +548,15 @@ fun ConnectView(
               fontWeight = FontWeight.Normal,
               textAlign = TextAlign.Center,
           )
-          Spacer(modifier = Modifier.size(1.dp))
+            */
+          Spacer(modifier = Modifier.size(100.dp))
           PrimaryActionButton(onClick = connectAction) {
             Text(
                 text = stringResource(id = R.string.connect),
                 fontSize = MaterialTheme.typography.titleMedium.fontSize)
           }
         } else {
-          TailscaleLogoView(modifier = Modifier.size(50.dp))
+          // TailscaleLogoView(modifier = Modifier.size(50.dp))
           Spacer(modifier = Modifier.size(1.dp))
           Text(
               text = stringResource(id = R.string.welcome_to_tailscale),
@@ -509,7 +566,7 @@ fun ConnectView(
               stringResource(R.string.login_to_join_your_tailnet),
               style = MaterialTheme.typography.titleSmall,
               textAlign = TextAlign.Center)
-          Spacer(modifier = Modifier.size(1.dp))
+          Spacer(modifier = Modifier.size(100.dp))
           PrimaryActionButton(onClick = loginAction) {
             Text(
                 text = stringResource(id = R.string.log_in),

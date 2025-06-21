@@ -25,6 +25,15 @@ fun PrimaryActionButton(onClick: () -> Unit, content: @Composable RowScope.() ->
       modifier = Modifier.fillMaxWidth(),
       content = content)
 }
+@Composable
+fun PrimaryActionButton(onClick: () -> Unit, enabled: Boolean, modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
+  Button(
+      onClick = onClick,
+      enabled = enabled,
+      contentPadding = PaddingValues(vertical = 12.dp),
+      modifier = modifier.then(Modifier.fillMaxWidth()),
+      content = content)
+}
 
 @Composable
 fun OpenURLButton(title: String, url: String) {

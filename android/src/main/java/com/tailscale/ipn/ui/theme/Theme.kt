@@ -56,63 +56,73 @@ fun AppTheme(useDarkTheme: Boolean = isSystemInDarkTheme(), content: @Composable
   MaterialTheme(colorScheme = colors, typography = typography, content = content)
 }
 
-private val LightColors =
-    lightColorScheme(
-        primary = Color(0xFF4B70CC), // blue-500
-        onPrimary = Color(0xFFFFFFFF), // white
-        primaryContainer = Color(0xFFF0F5FF), // blue-0
-        onPrimaryContainer = Color(0xFF3E5DB3), // blue-600
-        error = Color(0xFFB22C30), // red-500
-        onError = Color(0xFFFFFFFF), // white
-        errorContainer = Color(0xFFFEF6F3), // red-0
-        onErrorContainer = Color(0xFF930921), // red-600
-        surfaceDim = Color(0xFFF7F5F4), // gray-100
-        surface = Color(0xFFFFFFFF), // white,
-        background = Color(0xFFF7F5F4), // gray-100
-        surfaceBright = Color(0xFFFFFFFF), // white
-        surfaceContainerLowest = Color(0xFFFFFFFF), // white
-        surfaceContainerLow = Color(0xFFF7F5F4), // gray-100
-        surfaceContainer = Color(0xFFF7F5F4), // gray-100
-        surfaceContainerHigh = Color(0xFFF7F5F4), // gray-100
-        surfaceContainerHighest = Color(0xFFF7F5F4), // gray-100
-        surfaceVariant = Color(0xFFF7F5F4), // gray-100,
-        onSurface = Color(0xFF232222), // gray-800
-        onSurfaceVariant = Color(0xFF706E6D), // gray-500
-        outline = Color(0xFF706E6D), // gray-500
-        outlineVariant = Color(0xFFEDEBEA), // gray-200
-        inverseSurface = Color(0xFF232222), // gray-800
-        inverseOnSurface = Color(0xFFFFFFFF), // white
-        scrim = Color(0xAA000000), // black
-    )
+private val LightColors = lightColorScheme(
+    primary = Color(0xFFE10F73),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFFFE5F0),
+    onPrimaryContainer = Color(0xFFE10F73),
 
-private val DarkColors =
-    darkColorScheme(
-        primary = Color(0xFF3E5DB3), // blue-600
-        onPrimary = Color(0xFFFFFFFF), // white
-        primaryContainer = Color(0xFFf0f5ff), // blue-0
-        onPrimaryContainer = Color(0xFF5A82DC), // blue-400
-        error = Color(0xFFEF5350), // red-400
-        onError = Color(0xFFFFFFFF), // white
-        errorContainer = Color(0xFFfff6f4), // red-0
-        onErrorContainer = Color(0xFF940822), // red-600
-        surfaceDim = Color(0xFF1f1e1e), // gray-900
-        surface = Color(0xFF232222), // gray-800
-        background = Color(0xFF181717), // gray-1000
-        surfaceBright = Color(0xFF444342), // gray-600
-        surfaceContainerLowest = Color(0xFF1f1e1e), // gray-900
-        surfaceContainerLow = Color(0xFF232222), // gray-800
-        surfaceContainer = Color(0xFF181717), // gray-1000
-        surfaceContainerHigh = Color(0xFF232222), // gray-800
-        surfaceContainerHighest = Color(0xFF2e2d2d), // gray-700
-        surfaceVariant = Color(0xFF1f1e1e), // gray-900
-        onSurface = Color(0xFFfaf9f8), // gray-0
-        onSurfaceVariant = Color(0xFFafacab), // gray-400
-        outline = Color(0xFF706E6D), // gray-500
-        outlineVariant = Color(0xFF2E2D2D), // gray-700
-        inverseSurface = Color(0xFFEDEBEA), // gray-200
-        inverseOnSurface = Color(0xFF000000), // black
-        scrim = Color(0xAA000000), // black
-    )
+    surface = Color(0xFFE9E9EA),  // 统一背景色
+    background = Color(0xFFE9E9EA),
+    surfaceContainer = Color(0xFFE9E9EA),
+    surfaceContainerLow = Color(0xFFE9E9EA),
+    surfaceContainerHigh = Color(0xFFE9E9EA),
+    surfaceContainerHighest = Color(0xFFE9E9EA),
+    surfaceContainerLowest = Color.White,  // 可保留一点极限浮层
+
+    onSurface = Color(0xFF5C5E65),
+    onSurfaceVariant = Color(0xFF7A7C82),
+
+    error = Color(0xFFB22C30),
+    onError = Color.White,
+    errorContainer = Color(0xFFFEF6F3),
+    onErrorContainer = Color(0xFF930921),
+
+    surfaceDim = Color(0xFFE9E9EA),
+    surfaceBright = Color.White,
+    surfaceVariant = Color(0xFFF5F5F5),
+
+    outline = Color(0xFFCCCCCC),
+    outlineVariant = Color(0xFFE0E0E0),
+    inverseSurface = Color(0xFF5C5E65),
+    inverseOnSurface = Color.White,
+    scrim = Color(0xAA000000),
+)
+
+
+private val DarkColors = darkColorScheme(
+    primary = Color(0xFFE10F73),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFF5C5E65),
+    onPrimaryContainer = Color(0xFFE10F73),
+
+    surface = Color(0xFF18181A),  // 统一深背景
+    background = Color(0xFF18181A),
+    surfaceContainer = Color(0xFF18181A),
+    surfaceContainerLow = Color(0xFF18181A),
+    surfaceContainerHigh = Color(0xFF18181A),
+    surfaceContainerHighest = Color(0xFF18181A),
+    surfaceContainerLowest = Color(0xFF141415),
+
+    onSurface = Color(0xFFE9E9EA),
+    onSurfaceVariant = Color(0xFFAFAFAF),
+
+    error = Color(0xFFEF5350),
+    onError = Color.White,
+    errorContainer = Color(0xFFfff6f4),
+    onErrorContainer = Color(0xFF940821),
+
+    surfaceDim = Color(0xFF18181A),
+    surfaceBright = Color(0xFF232325),
+    surfaceVariant = Color(0xFF333335),
+
+    outline = Color(0xFF666666),
+    outlineVariant = Color(0xFF2E2D2D),
+    inverseSurface = Color(0xFFEDEBEA),
+    inverseOnSurface = Color.Black,
+    scrim = Color(0xAA000000),
+)
+
 
 val ColorScheme.warning: Color
   @Composable
