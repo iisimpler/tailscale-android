@@ -64,7 +64,7 @@ func start(dataDir, directFileRoot string, appCtx AppContext) Application {
 		}
 	}()
 
-	initLogging(appCtx)
+	// initLogging(appCtx)
 	// Set XDG_CACHE_HOME to make os.UserCacheDir work.
 	if _, exists := os.LookupEnv("XDG_CACHE_HOME"); !exists {
 		cachePath := filepath.Join(dataDir, "cache")
